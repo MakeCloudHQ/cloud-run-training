@@ -40,9 +40,7 @@ def hello():
     Main endpoint - says hello!
     """
     name = request.args.get('name', 'World')
-    env = os.environ.get('ENVIRONMENT', 'unknown')
-    version = os.environ.get('VERSION', 'unknown')
-    return f'Hello {name}! (env: {env}, version: {version})'
+    return f'Hello {name}!'
 
 
 @app.route('/health')
