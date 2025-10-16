@@ -4,6 +4,4 @@
 project_id   = "my-project-id"
 region       = "europe-west2"
 service_name = "hello-lb"
-
-# Uncomment if using HTTPS with managed certificate
-# domain_name = "api.example.com"
+domain_name  = "api.example.com"  # Your domain for SSL certificate

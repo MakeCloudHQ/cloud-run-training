@@ -10,7 +10,12 @@ output "load_balancer_ip" {
 
 output "load_balancer_url" {
   description = "URL to access via load balancer"
-  value       = "http://${google_compute_global_address.default.address}"
+  value       = "https://${var.domain_name}"
+}
+
+output "load_balancer_ip_url" {
+  description = "URL to access via load balancer IP (for testing before DNS)"
+  value       = "https://${google_compute_global_address.default.address}"
 }
 
 output "backend_service_name" {
@@ -23,22 +28,30 @@ output "neg_name" {
   value       = google_compute_region_network_endpoint_group.cloudrun_neg.name
 }
 
+output "ssl_certificate_status" {
+  description = "SSL certificate provisioning status"
+  value       = google_compute_managed_ssl_certificate.default.id
+}
+
 output "instructions" {
   description = "Next steps"
   value       = <<-EOT
 
     Cloud Run Service deployed successfully!
 
+    IMPORTANT: Configure DNS before the SSL certificate will provision:
+      Create an A record: ${var.domain_name} → ${google_compute_global_address.default.address}
+
     Direct access (via Cloud Run):
       ${google_cloud_run_v2_service.hello.uri}
 
-    Load Balancer access:
-      http://${google_compute_global_address.default.address}
+    Load Balancer access (after DNS is configured):
+      https://${var.domain_name}
 
-    Note: It may take 1-2 minutes for the load balancer to become fully operational.
-
-    Test the load balancer:
-      curl http://${google_compute_global_address.default.address}
+    Note:
+    - SSL certificate provisioning takes 15-60 minutes after DNS is configured
+    - HTTP traffic on port 80 redirects to HTTPS
+    - Check certificate status: gcloud compute ssl-certificates describe ${var.service_name}-cert --global
 
     View load balancer in Console:
       https://console.cloud.google.com/net-services/loadbalancing/list/loadBalancers

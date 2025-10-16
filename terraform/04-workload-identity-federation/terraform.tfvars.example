@@ -1,0 +1,9 @@
+# Example terraform.tfvars file
+# Copy this to terraform.tfvars and fill in your values
+
+project_id                   = "my-project-id"
+region                       = "europe-west2"
+github_repository            = "MakeCloudHQ/cloud-run-training"
+pool_id                      = "github-actions-pool"
+provider_id                  = "github-oidc-provider"
+artifact_registry_repository = "cloud-run-images"

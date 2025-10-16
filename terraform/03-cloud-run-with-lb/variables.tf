@@ -15,8 +15,7 @@ variable "service_name" {
   default     = "hello-lb"
 }
 
-# Uncomment if using HTTPS with managed certificate
-# variable "domain_name" {
-#   description = "Domain name for SSL certificate (e.g., api.example.com)"
-#   type        = string
-# }
+variable "domain_name" {
+  description = "Domain name for SSL certificate (e.g., api.example.com)"
+  type        = string
+}

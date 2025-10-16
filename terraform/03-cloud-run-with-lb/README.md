@@ -1,6 +1,6 @@
 # Cloud Run with Load Balancer - Terraform Demo
 
-This Terraform configuration deploys a Cloud Run service behind an Application Load Balancer.
+This Terraform configuration deploys a Cloud Run service behind an Application Load Balancer with HTTPS and a Google-managed SSL certificate.
 
 ## What This Creates
 
@@ -12,9 +12,11 @@ Internet → External IP → HTTP Proxy → URL Map → Backend Service → NEG 
 - Cloud Run service (using Google's hello container)
 - Serverless Network Endpoint Group (NEG)
 - Backend Service
-- URL Map
-- HTTP Target Proxy
-- Global Forwarding Rule
+- URL Map for routing
+- Google-managed SSL certificate
+- HTTPS Target Proxy
+- HTTP to HTTPS redirect
+- Global Forwarding Rules (HTTPS on 443, HTTP on 80)
 - Static External IP Address
 
 ## Architecture
@@ -66,6 +68,7 @@ Internet → External IP → HTTP Proxy → URL Map → Backend Service → NEG 
 
 - Terraform >= 1.0
 - Google Cloud project with billing enabled
+- **A domain name you control** (for SSL certificate)
 - APIs enabled:
   - Cloud Run API: `gcloud services enable run.googleapis.com`
   - Compute Engine API: `gcloud services enable compute.googleapis.com`
@@ -88,6 +91,7 @@ Edit `terraform.tfvars`:
 project_id   = "my-project-id"
 region       = "europe-west2"
 service_name = "hello-lb"
+domain_name  = "api.example.com"  # Your actual domain
 ```
 
 ### Step 2: Initialize Terraform
@@ -102,14 +106,18 @@ terraform init
 terraform plan
 ```
 
-You should see 8 resources to be created:
+You should see 11 resources to be created:
 - `google_cloud_run_v2_service.hello`
 - `google_cloud_run_v2_service_iam_member.public_access`
 - `google_compute_region_network_endpoint_group.cloudrun_neg`
 - `google_compute_backend_service.default`
 - `google_compute_url_map.default`
-- `google_compute_target_http_proxy.default`
+- `google_compute_managed_ssl_certificate.default`
+- `google_compute_target_https_proxy.default`
+- `google_compute_url_map.http_redirect`
+- `google_compute_target_http_proxy.http_redirect`
 - `google_compute_global_address.default`
+- `google_compute_global_forwarding_rule.https`
 - `google_compute_global_forwarding_rule.http`
 
 ### Step 4: Apply
@@ -122,20 +130,44 @@ Type `yes` when prompted.
 
 This will take 2-3 minutes to complete.
 
-### Step 5: Test the Deployment
+### Step 5: Configure DNS
 
-After apply completes, you'll see outputs:
+**IMPORTANT:** Before the SSL certificate will provision, you must configure DNS.
 
-```
-cloud_run_url       = "https://hello-lb-xxx-uc.a.run.app"
-load_balancer_ip    = "34.120.1.5"
-load_balancer_url   = "http://34.120.1.5"
-```
-
-**Test via load balancer:**
+Get the load balancer IP:
 ```bash
-LB_IP=$(terraform output -raw load_balancer_ip)
-curl http://$LB_IP
+terraform output load_balancer_ip
+```
+
+Create an A record in your DNS provider:
+```
+api.example.com  →  34.120.1.5
+```
+
+### Step 6: Wait for SSL Certificate
+
+SSL certificate provisioning takes **15-60 minutes** after DNS is configured.
+
+Check certificate status:
+```bash
+gcloud compute ssl-certificates describe hello-lb-cert --global
+```
+
+Look for `status: ACTIVE`. While provisioning, it will show `PROVISIONING`.
+
+### Step 7: Test the Deployment
+
+After the certificate is `ACTIVE`, test:
+
+**Test via custom domain:**
+```bash
+curl https://api.example.com
+```
+
+**Test HTTP redirect:**
+```bash
+curl -I http://api.example.com
+# Should return 301 redirect to https://
 ```
 
 **Test direct Cloud Run URL:**
@@ -144,11 +176,9 @@ CLOUD_RUN_URL=$(terraform output -raw cloud_run_url)
 curl $CLOUD_RUN_URL
 ```
 
-Both should return the same Hello World HTML page.
+All should return the Hello World HTML page.
 
-**Note:** It may take 1-2 minutes after `terraform apply` completes for the load balancer to be fully operational.
-
-### Step 6: View in Console
+### Step 8: View in Console
 
 Open the load balancer in Google Cloud Console:
 ```
@@ -160,53 +190,24 @@ Explore the components:
 - Host and path rules (URL map)
 - Backend (backend service and NEG)
 
-## Adding HTTPS
+## How It Works
 
-To use HTTPS with a managed SSL certificate:
+### HTTPS with Managed Certificate
 
-### Step 1: Uncomment HTTPS Resources
+The configuration automatically provisions a Google-managed SSL certificate for your domain. This requires:
 
-In `main.tf`, uncomment:
-- `google_compute_target_https_proxy.default`
-- `google_compute_managed_ssl_certificate.default`
-- `google_compute_global_forwarding_rule.https`
+1. **DNS Configuration:** Your domain must point to the load balancer IP
+2. **Domain Validation:** Google validates you control the domain via DNS
+3. **Certificate Provisioning:** Takes 15-60 minutes
+4. **Automatic Renewal:** Google handles certificate renewal
 
-Comment out:
-- `google_compute_target_http_proxy.default`
-- `google_compute_global_forwarding_rule.http`
+### HTTP to HTTPS Redirect
 
-### Step 2: Add Domain Variable
-
-In `variables.tf`, uncomment:
-```hcl
-variable "domain_name" {
-  description = "Domain name for SSL certificate"
-  type        = string
-}
-```
-
-In `terraform.tfvars`:
-```hcl
-domain_name = "api.example.com"
-```
-
-### Step 3: Configure DNS
-
-Before applying, point your domain to the load balancer IP:
-```
-A record: api.example.com → 34.120.1.5
-```
-
-### Step 4: Apply
-
-```bash
-terraform apply
-```
-
-Certificate provisioning takes 15-60 minutes. Check status:
-```bash
-gcloud compute ssl-certificates describe hello-lb-cert --global
-```
+All HTTP traffic (port 80) is automatically redirected to HTTPS (port 443):
+- Separate URL map for HTTP with redirect rule
+- Separate HTTP target proxy
+- HTTP forwarding rule routes to redirect proxy
+- 301 permanent redirect to HTTPS version
 
 ## Customization
 
@@ -345,9 +346,11 @@ This will delete:
 
 **Solutions:**
 - Verify DNS is correctly configured (A record pointing to LB IP)
-- Wait up to 60 minutes for provisioning
-- Domain must be publicly resolvable
-- Check certificate status: `gcloud compute ssl-certificates list`
+- Check DNS propagation: `dig api.example.com` or `nslookup api.example.com`
+- Wait up to 60 minutes for provisioning after DNS is correct
+- Domain must be publicly resolvable (not localhost or private domain)
+- Check certificate status: `gcloud compute ssl-certificates describe hello-lb-cert --global`
+- View detailed status in Console: Network Services → Load balancing → Certificates
 
 ### Terraform State Lock
 

@@ -90,31 +90,45 @@ resource "google_compute_url_map" "default" {
 }
 
 # ============================================================================
-# HTTP(S) Target Proxy
+# SSL Certificate
 # ============================================================================
 
-# Option 1: HTTP Target Proxy (simple, no SSL)
-resource "google_compute_target_http_proxy" "default" {
-  name    = "${var.service_name}-http-proxy"
-  url_map = google_compute_url_map.default.id
+resource "google_compute_managed_ssl_certificate" "default" {
+  name = "${var.service_name}-cert"
+
+  managed {
+    domains = [var.domain_name]
+  }
 }
 
-# Option 2: HTTPS Target Proxy (requires SSL certificate)
-# Uncomment this and comment out the HTTP proxy above if you have a certificate
-#
-# resource "google_compute_target_https_proxy" "default" {
-#   name             = "${var.service_name}-https-proxy"
-#   url_map          = google_compute_url_map.default.id
-#   ssl_certificates = [google_compute_managed_ssl_certificate.default.id]
-# }
-#
-# resource "google_compute_managed_ssl_certificate" "default" {
-#   name = "${var.service_name}-cert"
-#
-#   managed {
-#     domains = [var.domain_name]
-#   }
-# }
+# ============================================================================
+# HTTPS Target Proxy
+# ============================================================================
+
+resource "google_compute_target_https_proxy" "default" {
+  name             = "${var.service_name}-https-proxy"
+  url_map          = google_compute_url_map.default.id
+  ssl_certificates = [google_compute_managed_ssl_certificate.default.id]
+}
+
+# ============================================================================
+# HTTP to HTTPS Redirect
+# ============================================================================
+
+resource "google_compute_url_map" "http_redirect" {
+  name = "${var.service_name}-http-redirect"
+
+  default_url_redirect {
+    https_redirect         = true
+    redirect_response_code = "MOVED_PERMANENTLY_DEFAULT"
+    strip_query            = false
+  }
+}
+
+resource "google_compute_target_http_proxy" "http_redirect" {
+  name    = "${var.service_name}-http-proxy"
+  url_map = google_compute_url_map.http_redirect.id
+}
 
 # ============================================================================
 # Global Forwarding Rule
@@ -127,24 +141,22 @@ resource "google_compute_global_address" "default" {
   ip_version   = "IPV4"
 }
 
-# HTTP Forwarding Rule
+# HTTPS Forwarding Rule
+resource "google_compute_global_forwarding_rule" "https" {
+  name                  = "${var.service_name}-https-rule"
+  ip_protocol           = "TCP"
+  load_balancing_scheme = "EXTERNAL_MANAGED"
+  port_range            = "443"
+  target                = google_compute_target_https_proxy.default.id
+  ip_address            = google_compute_global_address.default.id
+}
+
+# HTTP Forwarding Rule (redirects to HTTPS)
 resource "google_compute_global_forwarding_rule" "http" {
   name                  = "${var.service_name}-http-rule"
   ip_protocol           = "TCP"
   load_balancing_scheme = "EXTERNAL_MANAGED"
   port_range            = "80"
-  target                = google_compute_target_http_proxy.default.id
+  target                = google_compute_target_http_proxy.http_redirect.id
   ip_address            = google_compute_global_address.default.id
 }
-
-# HTTPS Forwarding Rule (if using HTTPS proxy)
-# Uncomment if using HTTPS target proxy above
-#
-# resource "google_compute_global_forwarding_rule" "https" {
-#   name                  = "${var.service_name}-https-rule"
-#   ip_protocol           = "TCP"
-#   load_balancing_scheme = "EXTERNAL_MANAGED"
-#   port_range            = "443"
-#   target                = google_compute_target_https_proxy.default.id
-#   ip_address            = google_compute_global_address.default.id
-# }
