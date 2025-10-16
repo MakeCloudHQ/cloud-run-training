@@ -213,12 +213,12 @@ provider "google" {
 }
 
 variable "project_id" {
-  description = "GCP Project ID"
+  description = "Google Cloud Project ID"
   type        = string
 }
 
 variable "region" {
-  description = "GCP Region"
+  description = "Google Cloud Region"
   type        = string
   default     = "us-central1"
 }

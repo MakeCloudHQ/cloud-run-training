@@ -12,9 +12,9 @@ Curated links and resources for continued learning about Google Cloud Platform a
 - **Cloud Run Best Practices**: https://cloud.google.com/run/docs/best-practices
 - **Cloud Run FAQ**: https://cloud.google.com/run/docs/faq
 
-### GCP Fundamentals
+### Google Cloud Fundamentals
 
-- **GCP Documentation**: https://cloud.google.com/docs
+- **Google Cloud Documentation**: https://cloud.google.com/docs
 - **IAM Documentation**: https://cloud.google.com/iam/docs
 - **VPC Documentation**: https://cloud.google.com/vpc/docs
 - **Cloud SQL Documentation**: https://cloud.google.com/sql/docs
@@ -345,4 +345,4 @@ If you'd like to contribute or report issues:
 
 **Happy Cloud Running!**
 
-For questions about this training, contact the instructor or your GCP representative.
+For questions about this training, contact the instructor or your Google Cloud representative.

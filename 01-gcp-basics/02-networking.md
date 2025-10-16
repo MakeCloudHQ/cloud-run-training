@@ -1,14 +1,14 @@
 # Networking Basics
 
-Understanding GCP networking is essential for deploying services, especially Cloud Run with VPC connectivity.
+Understanding Google Cloud networking is essential for deploying services, especially Cloud Run with VPC connectivity.
 
 ## VPC (Virtual Private Cloud)
 
-A VPC is your private network space within GCP.
+A VPC is your private network space within Google Cloud.
 
 ### Key Concepts
 
-**Global Resource**: Unlike AWS, GCP VPCs are global
+**Global Resource**: Unlike AWS, Google Cloud VPCs are global
 - Spans all regions
 - Subnets are regional (but VPC is global)
 
@@ -58,7 +58,7 @@ gcloud compute networks subnets create my-subnet \
 - `/24` subnet = 254 usable IPs
 - `/28` subnet = 14 usable IPs
 
-GCP reserves first 2 and last 2 IPs in each subnet.
+Google Cloud reserves first 2 and last 2 IPs in each subnet.
 
 ## Types of VPCs
 
@@ -223,7 +223,7 @@ Connect two VPCs directly.
 
 ### 4. Cloud VPN / Interconnect
 
-Connect GCP to on-premises networks.
+Connect Google Cloud to on-premises networks.
 
 - **Cloud VPN**: Encrypted tunnel over internet
 - **Cloud Interconnect**: Dedicated physical connection
@@ -254,7 +254,7 @@ Connect GCP to on-premises networks.
 - Default: Direct to internet (via public IP)
 - Optional: Route through VPC (requires VPC Connector)
 
-## DNS in GCP
+## DNS in Google Cloud
 
 ### Cloud DNS
 
@@ -342,7 +342,7 @@ Fully private, accessed only within VPC or via VPN/Interconnect.
 
 ## Key Takeaways
 
-- GCP VPCs are global, subnets are regional
+- Google Cloud VPCs are global, subnets are regional
 - Firewall rules are stateful and applied at VPC level
 - Cloud NAT enables internet access for resources without public IPs
 - VPC Connectors link Cloud Run to VPC resources

@@ -1,6 +1,6 @@
 # IAM (Identity and Access Management)
 
-IAM controls who can do what with your GCP resources. Understanding IAM is crucial for security and access management.
+IAM controls who can do what with your Google Cloud resources. Understanding IAM is crucial for security and access management.
 
 ## Core Concepts
 
@@ -135,7 +135,7 @@ Service accounts are identities for applications, not humans.
 
 Your code needs to:
 - Call Google APIs
-- Access other GCP resources
+- Access other Google Cloud resources
 - Authenticate itself
 
 **Don't use user credentials in code!** Use service accounts instead.

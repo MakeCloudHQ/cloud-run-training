@@ -5,7 +5,7 @@ Please complete these setup steps **before** the training session to ensure we c
 ## 1. Google Cloud Platform Access
 
 You should have received:
-- Access to a GCP project in your organization
+- Access to a Google Cloud project in your organization
 - **Owner** role permissions on this project
 - The project should be linked to a billing account
 
@@ -21,7 +21,7 @@ If you don't have access, please contact your Director of Engineering or the ses
 
 ## 2. Install Google Cloud CLI
 
-The `gcloud` CLI is essential for interacting with GCP from your terminal.
+The `gcloud` CLI is essential for interacting with Google Cloud from your terminal.
 
 ### macOS
 ```bash
@@ -97,7 +97,7 @@ docker ps
 
 ## 5. Enable Required APIs
 
-Run these commands to enable the GCP APIs we'll be using:
+Run these commands to enable the Google Cloud APIs we'll be using:
 
 ```bash
 gcloud services enable run.googleapis.com
@@ -113,7 +113,7 @@ This may take a minute or two to complete.
 ## 6. Text Editor / IDE
 
 Have your preferred code editor ready. Suggestions:
-- VS Code (recommended - has great GCP extensions)
+- VS Code (recommended - has great Google Cloud extensions)
 - IntelliJ IDEA
 - Sublime Text
 - vim/emacs (if you're comfortable with them)

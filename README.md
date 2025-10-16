@@ -4,13 +4,13 @@ Welcome! This repository contains materials for a comprehensive training session
 
 ## Session Overview
 
-This training is designed for teams with mixed experience levels in GCP, covering fundamentals through advanced Cloud Run deployment strategies.
+This training is designed for teams with mixed experience levels in Google Cloud, covering fundamentals through advanced Cloud Run deployment strategies.
 
 ### Duration: 4-5 hours
 
 ## Agenda
 
-### 1. GCP Basics (1-2 hours)
+### 1. Google Cloud Basics (1-2 hours)
 Introduction to Google Cloud Platform fundamentals for teams with mixed experience levels.
 
 **Topics Covered:**

@@ -342,7 +342,7 @@ Before moving to the next section:
 4. Any blocking questions before we deploy Cloud Run?
 
 **Key takeaway**: You don't need to be experts, but you should have mental models of:
-- How GCP organizes resources
+- How Google Cloud organizes resources
 - How networking works at a high level
 - How IAM controls access
 

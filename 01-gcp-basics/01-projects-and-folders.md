@@ -1,10 +1,10 @@
 # Projects and Folders
 
-Understanding how GCP organizes resources is fundamental to working effectively with the platform.
+Understanding how Google Cloud organizes resources is fundamental to working effectively with the platform.
 
 ## The Resource Hierarchy
 
-GCP uses a hierarchical structure to organize resources:
+Google Cloud uses a hierarchical structure to organize resources:
 
 ```
 Organization (optional)
@@ -15,22 +15,74 @@ Organization (optional)
 
 ### Organization
 
-- Represents your company/organization
-- Root node of the hierarchy
-- Requires Google Workspace or Cloud Identity
-- Provides centralized control and visibility
+The organization is the root node of your Google Cloud resource hierarchy and represents your company.
 
-**Key Benefits:**
-- Organization-wide policies
-- Centralized billing
+**Prerequisites:**
+
+To have a Google Cloud organization, you **must** have either:
+
+1. **Google Workspace** (formerly G Suite)
+   - Full productivity suite: Gmail, Drive, Docs, etc.
+   - Your company domain (e.g., `acme.com`)
+   - Used by companies that want Google's productivity tools
+   - Examples: `alice@acme.com`, `bob@acme.com`
+
+2. **Cloud Identity** (Free or Premium)
+   - Identity management **without** the productivity apps
+   - Just user/group management for your domain
+   - Free tier available (Cloud Identity Free)
+   - Used by companies that want Google Cloud but not Google Workspace
+
+**How it Works:**
+
+```
+Your Company Domain (acme.com)
+    ↓
+Google Workspace or Cloud Identity
+    ↓
+Google Cloud Organization (acme.com)
+    ↓
+All your Google Cloud projects
+```
+
+When you set up Google Workspace or Cloud Identity with your domain:
+- Google automatically creates a corresponding Google Cloud organization
+- The organization is tied to your domain (e.g., `acme.com`)
+- Users with `@acme.com` accounts are part of your organization
+- One organization per domain (or per primary domain in multi-domain setups)
+
+**Without Workspace/Cloud Identity:**
+
+If you just sign up for Google Cloud with a personal Gmail account:
+- **No organization** - your projects are "standalone"
+- No folders available
+- No centralized control
+- Each project is independent
+- Fine for individuals/learning, not ideal for companies
+
+**Key Benefits of Having an Organization:**
+- Organization-wide IAM policies
+- Centralized billing across all projects
 - Consolidated audit logs
 - Programmatic resource creation
+- Folder hierarchy for structure
+- Better governance and compliance
 
 ### Folders
 
 - Provide grouping mechanism for projects
 - Can be nested (up to 10 levels deep)
 - Useful for different teams, departments, or environments
+- **IAM permissions inherit downward** - permissions granted at folder level automatically apply to all projects within that folder
+
+**Key Benefit - IAM Inheritance:**
+
+This is powerful for access management! Grant a role once at the folder level, and it applies to all projects underneath. For example:
+- Grant `roles/viewer` at the Production folder → Read-only access to all production projects
+- Grant `roles/run.developer` at the Dev folder → Deploy/manage Cloud Run in all dev projects
+- No need to manage permissions on each project individually
+
+We'll cover IAM inheritance in detail and learn about predefined roles (recommended) vs basic roles in the [IAM section](./03-iam.md).
 
 **Common Patterns:**
 ```
@@ -44,7 +96,7 @@ Organization
 
 ### Projects
 
-- **Required** container for all GCP resources
+- **Required** container for all Google Cloud resources
 - Isolated container with its own permissions, billing, APIs
 - Has unique project ID, project number, and project name
 
@@ -153,6 +205,32 @@ Organization: Acme Corp
         └── Staging
 ```
 
+**Leveraging IAM Inheritance:**
+
+With this structure, you can grant permissions efficiently:
+
+```bash
+# Grant all developers read-only access to Cloud Run in production
+gcloud resource-manager folders add-iam-policy-binding PRODUCTION_FOLDER_ID \
+    --member=group:developers@acme.com \
+    --role=roles/run.viewer
+
+# This automatically applies to:
+# - web-frontend-prod
+# - api-backend-prod
+# - admin-dashboard-prod
+
+# Grant Cloud Run developer role to non-production
+# (allows deploying and managing Cloud Run services)
+gcloud resource-manager folders add-iam-policy-binding NON_PROD_FOLDER_ID \
+    --member=group:developers@acme.com \
+    --role=roles/run.developer
+
+# This automatically applies to all dev and staging projects
+```
+
+This approach is much more maintainable than managing IAM on each individual project!
+
 ### 4. Shared Resources
 
 Some resources can/should be shared:
@@ -219,11 +297,12 @@ gcloud compute project-info describe --project=$(gcloud config get-value project
 
 ## Key Takeaways
 
-- Projects are the fundamental organizing unit in GCP
+- Projects are the fundamental organizing unit in Google Cloud
 - Every resource must belong to a project
 - Use multiple projects for isolation (especially between environments)
 - Project IDs are globally unique and immutable
 - Folders provide additional hierarchy for organizations
+- **IAM permissions inherit down the hierarchy** - grant once at folder/org level, applies to all children
 - Labels help organize resources within projects
 
 ## Discussion Points

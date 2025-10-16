@@ -99,7 +99,7 @@ Before starting:
 - Completed [setup instructions](../setup-instructions.md)
 - `gcloud` installed and authenticated
 - Docker installed
-- Access to a GCP project with billing enabled
+- Access to a Google Cloud project with billing enabled
 
 ## Quick Verification
 

@@ -1,4 +1,4 @@
-# GCP Basics
+# Google Cloud Basics
 
 This section covers fundamental Google Cloud Platform concepts for teams with mixed experience levels.
 
@@ -7,10 +7,10 @@ This section covers fundamental Google Cloud Platform concepts for teams with mi
 ## Learning Objectives
 
 By the end of this section, you should understand:
-- How GCP organizes resources using organizations, folders, and projects
-- Basic networking concepts in GCP (VPCs, subnets, connectivity)
+- How Google Cloud organizes resources using organizations, folders, and projects
+- Basic networking concepts in Google Cloud (VPCs, subnets, connectivity)
 - IAM fundamentals: roles, service accounts, and permissions
-- How to navigate the GCP Console and use gcloud CLI
+- How to navigate the Google Cloud Console and use gcloud CLI
 
 ## Topics
 
@@ -29,7 +29,7 @@ This section will be interactive with:
 
 ## Tips for Following Along
 
-- Have the [GCP Console](https://console.cloud.google.com) open
+- Have the [Google Cloud Console](https://console.cloud.google.com) open
 - Feel free to explore in your project as we discuss concepts
 - Ask questions anytime - there are no silly questions!
 - Think about how these concepts apply to your current/future projects
