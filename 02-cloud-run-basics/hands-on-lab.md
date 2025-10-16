@@ -67,7 +67,20 @@ Click the Service URL
 
 Now let's deploy the sample application included in this training.
 
-### Step 1: Navigate to Sample App
+### Step 1: Set Default Project
+
+Set your default project to avoid specifying `--project` on every command:
+
+```bash
+gcloud config set project my-project-id
+```
+
+Verify it's set:
+```bash
+gcloud config get-value project
+```
+
+### Step 2: Navigate to Sample App
 
 ```bash
 cd 02-cloud-run-basics/sample-app
@@ -79,7 +92,7 @@ You should see:
 - `requirements.txt` - Python dependencies
 - `Dockerfile` - Container build instructions
 
-### Step 2: Understand the Application
+### Step 3: Understand the Application
 
 Take a moment to look at `app.py`:
 ```python
@@ -103,13 +116,13 @@ if __name__ == '__main__':
 - Cloud Run provides `PORT` automatically
 - Simple HTTP endpoint
 
-### Step 3: Verify Cloud Build Service Account Permissions
+### Step 4: Verify Cloud Build Service Account Permissions
 
 When deploying from source, Cloud Build needs permission to deploy to Cloud Run.
 
 Get the default Cloud Build service account:
 ```bash
-SA_EMAIL=$(gcloud builds get-default-service-account --project=my-project-id)
+SA_EMAIL=$(gcloud builds get-default-service-account)
 echo $SA_EMAIL
 ```
 
@@ -119,14 +132,15 @@ The output will look like: `[PROJECT-NUMBER]-compute@developer.gserviceaccount.c
 
 Grant the Cloud Run Builder role:
 ```bash
-gcloud projects add-iam-policy-binding my-project-id \
+PROJECT_ID=$(gcloud config get-value project)
+gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member="serviceAccount:${SA_EMAIL}" \
     --role="roles/run.builder"
 ```
 
 This role allows Cloud Build to deploy Cloud Run services. It's usually auto-granted when you first use Cloud Build with Cloud Run, but it's good to verify!
 
-### Step 4: Deploy from Source
+### Step 5: Deploy from Source
 
 Cloud Run can build your container automatically:
 
@@ -134,7 +148,6 @@ Cloud Run can build your container automatically:
 gcloud run deploy my-app \
     --source=. \
     --region=europe-west2 \
-    --project=my-project-id \
     --allow-unauthenticated
 ```
 
@@ -146,7 +159,7 @@ gcloud run deploy my-app \
 
 This will take 1-2 minutes.
 
-### Step 5: Test Your Custom Service
+### Step 6: Test Your Custom Service
 
 ```bash
 # Get the URL
@@ -169,7 +182,7 @@ Hello World!
 Hello Phil!
 ```
 
-### Step 6: View Build Details
+### Step 7: View Build Details
 
 Check out what happened:
 
