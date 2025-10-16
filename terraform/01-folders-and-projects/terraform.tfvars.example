@@ -1,0 +1,29 @@
+# Example terraform.tfvars file
+# Copy this to terraform.tfvars and fill in your actual values
+
+# Parent for the dev/stage/prod folders
+# Can be either an organization or an existing folder
+# =====================================================
+# Option 1: Under organization
+# parent = "organizations/123456789012"
+#
+# Option 2: Under existing folder (recommended)
+# parent = "folders/123456789012"
+#
+# Find organization: gcloud organizations list
+# Find folders: gcloud resource-manager folders list --organization=YOUR_ORG_ID
+
+parent = "folders/000000000000"
+
+# Organization ID (required for Shared VPC service projects)
+# Find it: gcloud organizations list
+org_id = "000000000000"
+
+# Your Billing Account ID
+# Find it: gcloud billing accounts list
+billing_account_id = "000000-000000-000000"
+
+# Prefix for your project IDs
+# Will be suffixed with environment and random ID
+# Example: "my-app" becomes "my-app-dev-a3f9"
+project_prefix = "my-app"

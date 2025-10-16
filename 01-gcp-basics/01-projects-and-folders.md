@@ -362,13 +362,6 @@ gcloud compute project-info describe --project=$(gcloud config get-value project
 - **IAM permissions inherit down the hierarchy** - grant once at folder/org level, applies to all children
 - Labels help organize resources within projects
 
-## Discussion Points
-
-- How should we structure projects for your organization?
-- What naming conventions make sense for your team?
-- Single project vs multiple projects for your use case?
-- How to handle shared resources?
-
 ---
 
 Next: [Networking Basics →](./02-networking.md)
