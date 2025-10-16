@@ -1,0 +1,6 @@
+# Example terraform.tfvars file
+# Projects are automatically discovered by labels - no configuration needed!
+
+# Uncomment to override defaults:
+# network_name = "shared-vpc"
+# machine_type = "e2-micro"
