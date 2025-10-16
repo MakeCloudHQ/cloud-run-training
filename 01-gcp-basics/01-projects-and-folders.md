@@ -243,33 +243,90 @@ Some resources can/should be shared:
 
 **Secrets**: Use Secret Manager with cross-project permissions
 
-## Labels and Tags
+## Labels, Tags, and Network Tags
 
-Organize resources within projects using:
+Three different ways to organize and control resources - each serves a distinct purpose:
 
-### Labels
-- Key-value pairs attached to resources
-- Used for filtering, billing breakdown, and organization
-- Maximum 64 labels per resource
+### Labels (User-Defined Metadata)
 
+**Key-value pairs for organizing and tracking resources.**
+
+**What they're for:**
+1. **Cost tracking** - See spending broken down by label in billing reports
+   - "How much does the `team=backend` spend?"
+   - "What are costs for `environment=prod` vs `environment=dev`?"
+2. **Filtering resources** - Find resources in console or CLI
+   - Filter Cloud Run services by `application=api`
+   - List all resources for a specific team
+3. **Identifying resources** - Understand what resources belong to what
+   - Tag all payment-related resources with `application=payments`
+
+**Usage:**
 ```bash
 # Add labels to a Cloud Run service
 gcloud run services update my-service \
     --labels=environment=prod,team=backend,cost-center=engineering
+
+# Filter by labels
+gcloud run services list --filter="labels.team=frontend"
 ```
 
 **Common Label Patterns:**
 - `environment`: dev, staging, prod
-- `team`: frontend, backend, data
-- `cost-center`: engineering, marketing
-- `application`: api, web, worker
+- `team`: frontend, backend, data, sre
+- `cost-center`: engineering, marketing, sales
+- `application`: api, web, worker, payments
 
-### Tags
+**Characteristics:**
+- Maximum 64 labels per resource
+- Informal - anyone with resource access can add/change
+- Attached directly to individual resources
 
-- For more complex organization and conditional policies
-- Defined at organization/folder level
-- Applied to projects and resources
-- Used in IAM conditional policies and firewall rules
+### Resource Manager Tags (Governance and Policy Enforcement)
+
+**Key-value pairs for conditional policies and governance.**
+
+**What they're for:**
+1. **Conditional IAM policies** - Grant permissions based on tags
+   - "Only allow deletion if tagged `data-classification=non-sensitive`"
+   - "Restrict access to resources tagged `compliance=pci`"
+2. **Organization policies** - Apply constraints based on tags
+   - "VMs tagged `environment=prod` must use specific machine types"
+
+**Key Difference from Labels:**
+- Must be **defined at organization/folder level first** (controlled/structured)
+- Used for **policy enforcement**, not billing
+- More formal governance tool
+
+**Usage:**
+```bash
+# First, define tag at org level (requires admin)
+gcloud resource-manager tags keys create environment \
+    --parent=organizations/123456789
+
+# Then apply to resources
+gcloud resource-manager tags bindings create \
+    --tag-value=environment/prod \
+    --parent=//cloudresourcemanager.googleapis.com/projects/my-project
+```
+
+**When to use:**
+- Enforcing compliance requirements
+- Conditional access controls
+- Organizational governance policies
+
+### Network Tags (Firewall and Routing)
+
+**Note:** These are completely different from the above!
+
+- **Compute Engine specific** - Used only for VMs
+- **Not key-value pairs** - Just strings (e.g., `web-server`, `database`)
+- **Purpose**: Define which firewall rules apply to which VMs
+- **Example**: All VMs with tag `web-server` allow ports 80 and 443
+
+We'll cover network tags in detail in the [Networking section](./02-networking.md).
+
+**Important:** Don't confuse network tags with labels or Resource Manager tags - they're completely separate concepts!
 
 ## Demo: Exploring Your Project
 
