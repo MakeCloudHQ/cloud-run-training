@@ -187,11 +187,12 @@ Hello Phil!
 Check out what happened:
 
 ```bash
-# List builds
-gcloud builds list --limit=5
+# List builds (in the same region as your Cloud Run service)
+gcloud builds list --region=europe-west2 --limit=5
 
-# View build logs
-gcloud builds log $(gcloud builds list --limit=1 --format='value(id)')
+# View build logs for the most recent build
+gcloud builds log $(gcloud builds list --region=europe-west2 --limit=1 --format='value(id)') \
+    --region=europe-west2
 ```
 
 ## Part 3: Make Changes and Redeploy (10 minutes)
