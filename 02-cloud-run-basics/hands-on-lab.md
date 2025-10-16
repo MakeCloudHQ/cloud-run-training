@@ -388,8 +388,8 @@ gcloud run services logs read my-app \
     --region=europe-west2 \
     --limit=50
 
-# Follow logs in real-time
-gcloud run services logs tail my-app \
+# Follow logs in real-time (requires beta component)
+gcloud beta run services logs tail my-app \
     --region=europe-west2
 ```
 
