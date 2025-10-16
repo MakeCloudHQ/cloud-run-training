@@ -23,6 +23,7 @@ Let's start by deploying a sample "hello world" container that Google provides.
 gcloud run deploy hello \
     --image=us-docker.pkg.dev/cloudrun/container/hello \
     --region=europe-west2 \
+    --project=my-project-id \
     --allow-unauthenticated
 ```
 
@@ -47,10 +48,7 @@ Service URL: https://hello-abc123-uc.a.run.app
 
 ### Step 3: Test Your Service
 
-Click the Service URL or use curl:
-```bash
-curl https://hello-abc123-uc.a.run.app
-```
+Click the Service URL 
 
 **Expected output**: HTML page with "Cloud Run" branding
 
@@ -105,7 +103,30 @@ if __name__ == '__main__':
 - Cloud Run provides `PORT` automatically
 - Simple HTTP endpoint
 
-### Step 3: Deploy from Source
+### Step 3: Verify Cloud Build Service Account Permissions
+
+When deploying from source, Cloud Build needs permission to deploy to Cloud Run.
+
+Get the default Cloud Build service account:
+```bash
+SA_EMAIL=$(gcloud builds get-default-service-account --project=my-project-id)
+echo $SA_EMAIL
+```
+
+The output will look like: `[PROJECT-NUMBER]-compute@developer.gserviceaccount.com`
+
+**Note**: Google Cloud now uses the Compute Engine default service account for Cloud Build by default. See [Cloud Build service account updates](https://cloud.google.com/build/docs/cloud-build-service-account-updates) for more details.
+
+Grant the Cloud Run Builder role:
+```bash
+gcloud projects add-iam-policy-binding my-project-id \
+    --member="serviceAccount:${SA_EMAIL}" \
+    --role="roles/run.builder"
+```
+
+This role allows Cloud Build to deploy Cloud Run services. It's usually auto-granted when you first use Cloud Build with Cloud Run, but it's good to verify!
+
+### Step 4: Deploy from Source
 
 Cloud Run can build your container automatically:
 
@@ -113,6 +134,7 @@ Cloud Run can build your container automatically:
 gcloud run deploy my-app \
     --source=. \
     --region=europe-west2 \
+    --project=my-project-id \
     --allow-unauthenticated
 ```
 
@@ -124,7 +146,7 @@ gcloud run deploy my-app \
 
 This will take 1-2 minutes.
 
-### Step 4: Test Your Custom Service
+### Step 5: Test Your Custom Service
 
 ```bash
 # Get the URL
@@ -147,7 +169,7 @@ Hello World!
 Hello Phil!
 ```
 
-### Step 5: View Build Details
+### Step 6: View Build Details
 
 Check out what happened:
 
