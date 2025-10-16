@@ -13,9 +13,14 @@ module "stage_shared_vpc" {
 
   subnets = [
     {
-      subnet_name   = "stage-subnet"
+      subnet_name   = "stage-subnet-london"
       subnet_ip     = "10.0.0.0/24"
       subnet_region = "europe-west2"
+    },
+    {
+      subnet_name   = "stage-subnet-sydney"
+      subnet_ip     = "10.0.1.0/24"
+      subnet_region = "australia-southeast1"
     }
   ]
 
@@ -32,7 +37,7 @@ resource "google_compute_firewall" "stage_allow_icmp" {
     protocol = "icmp"
   }
 
-  source_ranges = ["10.0.0.0/24"]
+  source_ranges = ["10.0.0.0/24", "10.0.1.0/24"]
   priority      = 1000
 }
 

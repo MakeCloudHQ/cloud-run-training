@@ -50,7 +50,7 @@ This section contains common questions, scenarios, and topics for group discussi
 1. Cloud SQL has built-in integration (easiest):
    ```bash
    gcloud run deploy my-service \
-       --add-cloudsql-instances=my-project:us-central1:my-instance
+       --add-cloudsql-instances=my-project:europe-west2:my-instance
    ```
    - No VPC Connector needed
    - Use Unix socket connection

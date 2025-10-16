@@ -75,7 +75,8 @@ module "project_stage_service1" {
 
   shared_vpc         = module.project_stage_host.project_id
   shared_vpc_subnets = [
-    "projects/${module.project_stage_host.project_id}/regions/europe-west2/subnetworks/stage-subnet"
+    "projects/${module.project_stage_host.project_id}/regions/europe-west2/subnetworks/stage-subnet-london",
+    "projects/${module.project_stage_host.project_id}/regions/australia-southeast1/subnetworks/stage-subnet-sydney"
   ]
 
   activate_apis = [
@@ -88,6 +89,7 @@ module "project_stage_service1" {
     environment = "stage"
     managed_by  = "terraform"
     vpc_type    = "shared-service"
+    service     = "service1"
   }
 
   depends_on = [
@@ -110,7 +112,8 @@ module "project_stage_service2" {
 
   shared_vpc         = module.project_stage_host.project_id
   shared_vpc_subnets = [
-    "projects/${module.project_stage_host.project_id}/regions/europe-west2/subnetworks/stage-subnet"
+    "projects/${module.project_stage_host.project_id}/regions/europe-west2/subnetworks/stage-subnet-london",
+    "projects/${module.project_stage_host.project_id}/regions/australia-southeast1/subnetworks/stage-subnet-sydney"
   ]
 
   activate_apis = [
@@ -123,6 +126,7 @@ module "project_stage_service2" {
     environment = "stage"
     managed_by  = "terraform"
     vpc_type    = "shared-service"
+    service     = "service2"
   }
 
   depends_on = [

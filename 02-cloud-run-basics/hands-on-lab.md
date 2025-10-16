@@ -22,7 +22,7 @@ Let's start by deploying a sample "hello world" container that Google provides.
 ```bash
 gcloud run deploy hello \
     --image=us-docker.pkg.dev/cloudrun/container/hello \
-    --region=us-central1 \
+    --region=europe-west2 \
     --allow-unauthenticated
 ```
 
@@ -36,7 +36,7 @@ gcloud run deploy hello \
 
 You'll see output like:
 ```
-Deploying container to Cloud Run service [hello] in project [my-project] region [us-central1]
+Deploying container to Cloud Run service [hello] in project [my-project] region [europe-west2]
 ✓ Deploying... Done.
   ✓ Creating Revision...
   ✓ Routing traffic...
@@ -112,7 +112,7 @@ Cloud Run can build your container automatically:
 ```bash
 gcloud run deploy my-app \
     --source=. \
-    --region=us-central1 \
+    --region=europe-west2 \
     --allow-unauthenticated
 ```
 
@@ -129,7 +129,7 @@ This will take 1-2 minutes.
 ```bash
 # Get the URL
 SERVICE_URL=$(gcloud run services describe my-app \
-    --region=us-central1 \
+    --region=europe-west2 \
     --format='value(status.url)')
 
 echo $SERVICE_URL
@@ -180,7 +180,7 @@ def hello():
 ```bash
 gcloud run deploy my-app \
     --source=. \
-    --region=us-central1 \
+    --region=europe-west2 \
     --allow-unauthenticated
 ```
 
@@ -189,7 +189,7 @@ gcloud run deploy my-app \
 ```bash
 gcloud run revisions list \
     --service=my-app \
-    --region=us-central1
+    --region=europe-west2
 ```
 
 You should see two revisions:
@@ -214,7 +214,7 @@ Practice splitting traffic between revisions.
 # List revisions and save names
 REVISIONS=$(gcloud run revisions list \
     --service=my-app \
-    --region=us-central1 \
+    --region=europe-west2 \
     --format='value(name)')
 
 # Parse into variables
@@ -229,7 +229,7 @@ echo "Previous: $PREVIOUS"
 
 ```bash
 gcloud run services update-traffic my-app \
-    --region=us-central1 \
+    --region=europe-west2 \
     --to-revisions=$LATEST=50,$PREVIOUS=50
 ```
 
@@ -248,7 +248,7 @@ You should see responses from both revisions (with and without emoji).
 
 ```bash
 gcloud run services update-traffic my-app \
-    --region=us-central1 \
+    --region=europe-west2 \
     --to-revisions=$PREVIOUS=100
 ```
 
@@ -263,7 +263,7 @@ Should see the old version (without emoji).
 
 ```bash
 gcloud run services update-traffic my-app \
-    --region=us-central1 \
+    --region=europe-west2 \
     --to-latest
 ```
 
@@ -273,7 +273,7 @@ gcloud run services update-traffic my-app \
 
 ```bash
 gcloud run services describe my-app \
-    --region=us-central1 \
+    --region=europe-west2 \
     --format=yaml
 ```
 
@@ -281,7 +281,7 @@ gcloud run services describe my-app \
 
 ```bash
 gcloud run services update my-app \
-    --region=us-central1 \
+    --region=europe-west2 \
     --set-env-vars="ENVIRONMENT=production,VERSION=1.0.0"
 ```
 
@@ -301,7 +301,7 @@ Redeploy:
 ```bash
 gcloud run deploy my-app \
     --source=. \
-    --region=us-central1 \
+    --region=europe-west2 \
     --allow-unauthenticated
 ```
 
@@ -314,7 +314,7 @@ curl $SERVICE_URL
 
 ```bash
 gcloud run services update my-app \
-    --region=us-central1 \
+    --region=europe-west2 \
     --memory=512Mi \
     --cpu=1 \
     --max-instances=10 \
@@ -332,7 +332,7 @@ gcloud run services update my-app \
 
 ```bash
 gcloud run services describe my-app \
-    --region=us-central1
+    --region=europe-west2
 ```
 
 Check out:
@@ -349,12 +349,12 @@ Check out:
 ```bash
 # Stream logs
 gcloud run services logs read my-app \
-    --region=us-central1 \
+    --region=europe-west2 \
     --limit=50
 
 # Follow logs in real-time
 gcloud run services logs tail my-app \
-    --region=us-central1
+    --region=europe-west2
 ```
 
 Generate some traffic while watching logs:
@@ -387,8 +387,8 @@ If you want to remove the services:
 
 ```bash
 # Delete services
-gcloud run services delete hello --region=us-central1 --quiet
-gcloud run services delete my-app --region=us-central1 --quiet
+gcloud run services delete hello --region=europe-west2 --quiet
+gcloud run services delete my-app --region=europe-west2 --quiet
 
 # Optionally delete images from Artifact Registry
 gcloud artifacts repositories list
@@ -428,7 +428,7 @@ Try these on your own:
 - **Solution**: Service not public. Run:
   ```bash
   gcloud run services add-iam-policy-binding my-app \
-      --region=us-central1 \
+      --region=europe-west2 \
       --member=allUsers \
       --role=roles/run.invoker
   ```

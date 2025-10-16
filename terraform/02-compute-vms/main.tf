@@ -3,7 +3,10 @@
 # ============================================================================
 # This configuration creates VM instances in the Shared VPC created by
 # the 01-folders-and-projects configuration.
-# It uses data sources to look up existing projects and network resources.
+#
+# Projects are automatically discovered using label filtering - no need to
+# manually specify project IDs! The data sources in data.tf find projects
+# based on the labels set in 01-folders-and-projects.
 # ============================================================================
 
 terraform {

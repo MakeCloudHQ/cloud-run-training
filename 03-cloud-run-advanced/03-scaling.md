@@ -444,10 +444,10 @@ Go to Cloud Run > Service > Metrics
 ```bash
 # Watch instance count
 watch -n 2 'gcloud run services describe my-service \
-    --region=us-central1 \
+    --region=europe-west2 \
     --format="value(status.traffic[0].revisionName)" | \
     xargs -I {} gcloud run revisions describe {} \
-    --region=us-central1 \
+    --region=europe-west2 \
     --format="value(status.containerConcurrency)"'
 ```
 
@@ -629,7 +629,7 @@ For a new production service:
 ```bash
 gcloud run deploy my-service \
     --image=gcr.io/my-project/image \
-    --region=us-central1 \
+    --region=europe-west2 \
     --memory=512Mi \
     --cpu=1 \
     --concurrency=80 \

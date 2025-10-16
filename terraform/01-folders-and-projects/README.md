@@ -38,7 +38,7 @@ This Terraform configuration creates:
 
 3. **Staging Shared VPC Network**:
    - Custom VPC network in the host project
-   - Single subnet (10.0.0.0/24) in us-central1
+   - Single subnet (10.0.0.0/24) in europe-west2
    - Firewall rules for ICMP (ping) and SSH via IAP
    - Two VM instances (one in each service project) to demonstrate cross-project networking
 
@@ -411,7 +411,7 @@ terraform output summary
 # SSH into VM 1 (via IAP tunnel)
 gcloud compute ssh vm-service1 \
   --project=YOUR-STAGE-SVC1-PROJECT-ID \
-  --zone=us-central1-a \
+  --zone=europe-west2-a \
   --tunnel-through-iap
 
 # From VM 1, ping VM 2

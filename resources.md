@@ -319,7 +319,7 @@ gcloud run services delete SERVICE
 ### Common Flags
 
 ```bash
---region=us-central1
+--region=europe-west2
 --memory=512Mi
 --cpu=1
 --min-instances=0

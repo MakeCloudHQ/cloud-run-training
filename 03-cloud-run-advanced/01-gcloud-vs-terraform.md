@@ -19,7 +19,7 @@ Both have their place. Let's explore when to use each.
 ```bash
 gcloud run deploy my-service \
     --image=gcr.io/my-project/my-image \
-    --region=us-central1
+    --region=europe-west2
 ```
 One command, service deployed.
 
@@ -85,7 +85,7 @@ spec:
 
 Deploy:
 ```bash
-gcloud run services replace service.yaml --region=us-central1
+gcloud run services replace service.yaml --region=europe-west2
 ```
 
 **Benefits:**
@@ -101,7 +101,7 @@ gcloud run services replace service.yaml --region=us-central1
 # deploy.sh
 
 SERVICE_NAME="my-service"
-REGION="us-central1"
+REGION="europe-west2"
 IMAGE="gcr.io/my-project/my-image:$1"
 
 gcloud run deploy $SERVICE_NAME \
@@ -134,7 +134,7 @@ gcloud run services replace configs/$ENV.yaml
 ```hcl
 resource "google_cloud_run_service" "my_service" {
   name     = "my-service"
-  location = "us-central1"
+  location = "europe-west2"
 
   template {
     spec {
@@ -220,7 +220,7 @@ variable "project_id" {
 variable "region" {
   description = "Google Cloud Region"
   type        = string
-  default     = "us-central1"
+  default     = "europe-west2"
 }
 
 variable "image_tag" {
@@ -316,7 +316,7 @@ module "api_service" {
   source = "./modules/cloud-run-service"
 
   service_name = "my-api"
-  region       = "us-central1"
+  region       = "europe-west2"
   image        = "gcr.io/my-project/api:latest"
 }
 
@@ -324,7 +324,7 @@ module "worker_service" {
   source = "./modules/cloud-run-service"
 
   service_name = "my-worker"
-  region       = "us-central1"
+  region       = "europe-west2"
   image        = "gcr.io/my-project/worker:latest"
 }
 ```
@@ -433,7 +433,7 @@ You can combine both:
 # Terraform creates the service
 resource "google_cloud_run_service" "api" {
   name     = "my-api"
-  location = "us-central1"
+  location = "europe-west2"
 
   template {
     spec {
@@ -457,7 +457,7 @@ Then deploy with gcloud:
 ```bash
 gcloud run deploy my-api \
     --image=gcr.io/my-project/api:v1.2.3 \
-    --region=us-central1
+    --region=europe-west2
 ```
 
 Terraform won't revert the image change.
@@ -513,7 +513,7 @@ jobs:
         run: |
           gcloud run deploy my-service \
             --source=. \
-            --region=us-central1 \
+            --region=europe-west2 \
             --allow-unauthenticated
 ```
 
@@ -561,7 +561,7 @@ gcloud run services replace service.yaml
 ```hcl
 resource "google_cloud_run_service" "service" {
   name     = "my-service"
-  location = "us-central1"
+  location = "europe-west2"
 
   metadata {
     annotations = yamldecode(file("service.yaml")).metadata.annotations

@@ -252,7 +252,7 @@ image: gcr.io/my-project/my-api:v1.0.0
 # Use the same image!
 gcloud run deploy my-api \
     --image=gcr.io/my-project/my-api:v1.0.0 \
-    --region=us-central1
+    --region=europe-west2
 ```
 
 **Compare:**
@@ -464,14 +464,14 @@ response = requests.get('http://10.0.1.5:8080/api')
 # GKE Cluster (existing)
 resource "google_container_cluster" "main" {
   name     = "my-cluster"
-  location = "us-central1"
+  location = "europe-west2"
   # ... GKE config
 }
 
 # Cloud Run Service (new)
 resource "google_cloud_run_service" "new_api" {
   name     = "new-api"
-  location = "us-central1"
+  location = "europe-west2"
 
   template {
     spec {
@@ -580,7 +580,7 @@ spec:
 # Deploy
 gcloud run deploy user-api \
     --image=gcr.io/my-project/user-api:v1.5.0 \
-    --region=us-central1 \
+    --region=europe-west2 \
     --memory=512Mi \
     --cpu=1 \
     --min-instances=0 \

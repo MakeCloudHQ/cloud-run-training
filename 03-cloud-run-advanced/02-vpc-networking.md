@@ -56,7 +56,7 @@ A VPC Connector is a resource that bridges serverless services (Cloud Run, Cloud
 ```bash
 gcloud compute networks vpc-access connectors create my-connector \
     --network=my-vpc \
-    --region=us-central1 \
+    --region=europe-west2 \
     --range=10.8.0.0/28
 ```
 
@@ -69,7 +69,7 @@ gcloud compute networks vpc-access connectors create my-connector \
 ```bash
 gcloud compute networks vpc-access connectors create my-connector \
     --network=my-vpc \
-    --region=us-central1 \
+    --region=europe-west2 \
     --subnet=my-connector-subnet \
     --subnet-project=my-project
 ```
@@ -79,7 +79,7 @@ gcloud compute networks vpc-access connectors create my-connector \
 ```bash
 gcloud run deploy my-service \
     --image=gcr.io/my-project/my-image \
-    --region=us-central1 \
+    --region=europe-west2 \
     --vpc-connector=my-connector \
     --vpc-egress=all-traffic  # or private-ranges-only
 ```
@@ -117,7 +117,7 @@ gcloud sql instances patch my-instance \
 ```bash
 gcloud compute networks vpc-access connectors create sql-connector \
     --network=my-vpc \
-    --region=us-central1 \
+    --region=europe-west2 \
     --range=10.8.0.0/28
 ```
 
@@ -125,7 +125,7 @@ gcloud compute networks vpc-access connectors create sql-connector \
 ```bash
 gcloud run deploy my-api \
     --image=gcr.io/my-project/api \
-    --region=us-central1 \
+    --region=europe-west2 \
     --vpc-connector=sql-connector \
     --vpc-egress=private-ranges-only \
     --set-env-vars="DB_HOST=10.50.0.3"  # Private IP of Cloud SQL
@@ -135,7 +135,7 @@ gcloud run deploy my-api \
 ```bash
 gcloud run deploy my-api \
     --image=gcr.io/my-project/api \
-    --add-cloudsql-instances=my-project:us-central1:my-instance
+    --add-cloudsql-instances=my-project:europe-west2:my-instance
 ```
 
 Then connect via Unix socket (no VPC Connector needed).
@@ -150,14 +150,14 @@ If using `--vpc-egress=all-traffic`, you need Cloud NAT for internet access.
 ```bash
 gcloud compute routers create my-router \
     --network=my-vpc \
-    --region=us-central1
+    --region=europe-west2
 ```
 
 **Step 2: Create NAT configuration**
 ```bash
 gcloud compute routers nats create my-nat \
     --router=my-router \
-    --region=us-central1 \
+    --region=europe-west2 \
     --nat-all-subnet-ip-ranges \
     --auto-allocate-nat-external-ips
 ```
@@ -231,7 +231,7 @@ For fully private Cloud Run services accessible from VPC:
 ```bash
 gcloud run deploy internal-api \
     --image=gcr.io/my-project/api \
-    --region=us-central1 \
+    --region=europe-west2 \
     --ingress=internal-and-cloud-load-balancing \
     --no-allow-unauthenticated
 ```
@@ -241,36 +241,36 @@ gcloud run deploy internal-api \
 ```bash
 # Create serverless NEG (Network Endpoint Group)
 gcloud compute network-endpoint-groups create my-api-neg \
-    --region=us-central1 \
+    --region=europe-west2 \
     --network-endpoint-type=serverless \
     --cloud-run-service=internal-api
 
 # Create backend service
 gcloud compute backend-services create my-api-backend \
     --load-balancing-scheme=INTERNAL_MANAGED \
-    --region=us-central1 \
+    --region=europe-west2 \
     --protocol=HTTPS
 
 # Add NEG to backend
 gcloud compute backend-services add-backend my-api-backend \
-    --region=us-central1 \
+    --region=europe-west2 \
     --network-endpoint-group=my-api-neg \
-    --network-endpoint-group-region=us-central1
+    --network-endpoint-group-region=europe-west2
 
 # Create URL map
 gcloud compute url-maps create my-api-map \
-    --region=us-central1 \
+    --region=europe-west2 \
     --default-service=my-api-backend
 
 # Create HTTPS proxy
 gcloud compute target-https-proxies create my-api-proxy \
-    --region=us-central1 \
+    --region=europe-west2 \
     --url-map=my-api-map \
     --certificate-manager-certificates=my-cert  # Or use self-signed
 
 # Create forwarding rule (this is your internal IP)
 gcloud compute forwarding-rules create my-api-lb \
-    --region=us-central1 \
+    --region=europe-west2 \
     --load-balancing-scheme=INTERNAL_MANAGED \
     --network=my-vpc \
     --subnet=my-subnet \
@@ -297,7 +297,7 @@ Internet → Frontend (public) → Backend (internal) → Cloud SQL (private)
 ```bash
 gcloud run deploy backend \
     --image=gcr.io/my-project/backend \
-    --region=us-central1 \
+    --region=europe-west2 \
     --ingress=internal-and-cloud-load-balancing \
     --vpc-connector=my-connector \
     --vpc-egress=private-ranges-only \
@@ -309,7 +309,7 @@ gcloud run deploy backend \
 ```bash
 gcloud run deploy frontend \
     --image=gcr.io/my-project/frontend \
-    --region=us-central1 \
+    --region=europe-west2 \
     --ingress=all \
     --allow-unauthenticated
 ```
@@ -319,12 +319,12 @@ gcloud run deploy frontend \
 ```bash
 # Get frontend's service account
 FRONTEND_SA=$(gcloud run services describe frontend \
-    --region=us-central1 \
+    --region=europe-west2 \
     --format='value(spec.template.spec.serviceAccountName)')
 
 # Grant invoker role on backend
 gcloud run services add-iam-policy-binding backend \
-    --region=us-central1 \
+    --region=europe-west2 \
     --member=serviceAccount:$FRONTEND_SA \
     --role=roles/run.invoker
 ```
@@ -388,12 +388,12 @@ gcloud projects add-iam-policy-binding my-host-project \
 # Create connector using host project's VPC
 gcloud compute networks vpc-access connectors create shared-connector \
     --network=projects/my-host-project/global/networks/shared-vpc \
-    --region=us-central1 \
+    --region=europe-west2 \
     --range=10.8.0.0/28
 
 # Deploy service with shared connector
 gcloud run deploy my-service \
-    --region=us-central1 \
+    --region=europe-west2 \
     --vpc-connector=shared-connector
 ```
 
@@ -456,7 +456,7 @@ Benefits:
 # VPC Connector
 resource "google_vpc_access_connector" "connector" {
   name          = "my-connector"
-  region        = "us-central1"
+  region        = "europe-west2"
   ip_cidr_range = "10.8.0.0/28"
   network       = "my-vpc"
 }
@@ -464,7 +464,7 @@ resource "google_vpc_access_connector" "connector" {
 # Cloud Router for NAT
 resource "google_compute_router" "router" {
   name    = "my-router"
-  region  = "us-central1"
+  region  = "europe-west2"
   network = "my-vpc"
 }
 
@@ -481,7 +481,7 @@ resource "google_compute_router_nat" "nat" {
 # Cloud Run Service with VPC
 resource "google_cloud_run_service" "service" {
   name     = "my-service"
-  location = "us-central1"
+  location = "europe-west2"
 
   template {
     metadata {
@@ -521,7 +521,7 @@ gcloud compute ssh my-vm -- curl http://10.0.1.5:8080
 
 # Check connector status
 gcloud compute networks vpc-access connectors describe my-connector \
-    --region=us-central1
+    --region=europe-west2
 ```
 
 ### Can't Access Public Internet with `all-traffic`
@@ -529,7 +529,7 @@ gcloud compute networks vpc-access connectors describe my-connector \
 Need Cloud NAT:
 ```bash
 # Check NAT exists
-gcloud compute routers nats list --router=my-router --region=us-central1
+gcloud compute routers nats list --router=my-router --region=europe-west2
 ```
 
 ### High Latency

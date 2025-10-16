@@ -21,7 +21,7 @@ A VPC is your private network space within Google Cloud.
 
 ```
 VPC (Global)
-    ├── Subnet A (us-central1) - 10.128.0.0/20
+    ├── Subnet A (europe-west2) - 10.128.0.0/20
     ├── Subnet B (europe-west1) - 10.132.0.0/20
     └── Subnet C (asia-east1) - 10.140.0.0/20
 ```
@@ -240,7 +240,7 @@ Managed, authoritative DNS service for public domains.
 Automatic DNS for resources in VPC:
 - VM instances get automatic DNS names
 - Zone format: `[zone].c.[project-id].internal`
-- Example: `my-vm.us-central1-a.c.my-project.internal`
+- Example: `my-vm.europe-west2-a.c.my-project.internal`
 
 ### Private DNS Zones
 

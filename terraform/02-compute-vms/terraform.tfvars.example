@@ -1,23 +1,6 @@
 # Example terraform.tfvars file
-# Copy this to terraform.tfvars and fill in your actual values
+# Projects are automatically discovered by labels - no configuration needed!
 
-# Project IDs from the 01-folders-and-projects deployment
-# You can find these by running:
-#   cd ../01-folders-and-projects
-#   terraform output
-# Or by running:
-#   gcloud projects list --filter="parent.id=YOUR_FOLDER_ID"
-
-stage_host_project_id     = "my-app-stage-host-xxxx"
-stage_service1_project_id = "my-app-stage-svc1-xxxx"
-stage_service2_project_id = "my-app-stage-svc2-xxxx"
-
-# These match the resources created in 01-folders-and-projects
-# Only change if you modified those values
-network_name = "shared-vpc"
-subnet_name  = "stage-subnet"
-region       = "europe-west2"
-zone         = "europe-west2-a"
-
-# VM configuration
-machine_type = "e2-micro"
+# Uncomment to override defaults:
+# network_name = "shared-vpc"
+# machine_type = "e2-micro"

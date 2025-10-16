@@ -704,13 +704,13 @@ When things go wrong:
 gcloud run services logs read my-service --limit=50
 
 # 2. Check service status
-gcloud run services describe my-service --region=us-central1
+gcloud run services describe my-service --region=europe-west2
 
 # 3. Check revision status
-gcloud run revisions describe REVISION_NAME --region=us-central1
+gcloud run revisions describe REVISION_NAME --region=europe-west2
 
 # 4. Check IAM permissions
-gcloud run services get-iam-policy my-service --region=us-central1
+gcloud run services get-iam-policy my-service --region=europe-west2
 
 # 5. Test local Docker image
 docker run -p 8080:8080 -e PORT=8080 my-image

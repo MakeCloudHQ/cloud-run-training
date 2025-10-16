@@ -77,7 +77,7 @@ Cloud Run will build the container for you:
 ```bash
 gcloud run deploy my-app \
     --source=. \
-    --region=us-central1 \
+    --region=europe-west2 \
     --allow-unauthenticated
 ```
 
@@ -93,7 +93,7 @@ gcloud builds submit --tag gcr.io/$PROJECT_ID/cloud-run-sample
 # Deploy
 gcloud run deploy my-app \
     --image=gcr.io/$PROJECT_ID/cloud-run-sample \
-    --region=us-central1 \
+    --region=europe-west2 \
     --allow-unauthenticated
 ```
 
@@ -102,7 +102,7 @@ gcloud run deploy my-app \
 ```bash
 gcloud run deploy my-app \
     --source=. \
-    --region=us-central1 \
+    --region=europe-west2 \
     --allow-unauthenticated
 ```
 
@@ -114,7 +114,7 @@ Cloud Run will detect and use the Dockerfile.
 
 ```bash
 gcloud run services update my-app \
-    --region=us-central1 \
+    --region=europe-west2 \
     --set-env-vars="ENVIRONMENT=production,VERSION=2.0.0"
 ```
 
@@ -122,7 +122,7 @@ gcloud run services update my-app \
 
 ```bash
 gcloud run services update my-app \
-    --region=us-central1 \
+    --region=europe-west2 \
     --memory=512Mi \
     --cpu=1 \
     --max-instances=10
@@ -133,7 +133,7 @@ gcloud run services update my-app \
 ```bash
 # Get service URL
 SERVICE_URL=$(gcloud run services describe my-app \
-    --region=us-central1 \
+    --region=europe-west2 \
     --format='value(status.url)')
 
 # Test endpoints

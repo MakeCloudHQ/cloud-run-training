@@ -220,7 +220,7 @@ gcloud projects add-iam-policy-binding my-project \
 
 # Resource level (Cloud Run service)
 gcloud run services add-iam-policy-binding my-service \
-    --region=us-central1 \
+    --region=europe-west2 \
     --member=user:charlie@example.com \
     --role=roles/run.invoker
 ```
@@ -231,7 +231,7 @@ gcloud run services add-iam-policy-binding my-service \
 
 ```bash
 gcloud run services add-iam-policy-binding my-service \
-    --region=us-central1 \
+    --region=europe-west2 \
     --member=allUsers \
     --role=roles/run.invoker
 ```
@@ -242,7 +242,7 @@ gcloud run services add-iam-policy-binding my-service \
 
 ```bash
 gcloud run services add-iam-policy-binding my-service \
-    --region=us-central1 \
+    --region=europe-west2 \
     --member=allAuthenticatedUsers \
     --role=roles/run.invoker
 ```
@@ -253,13 +253,13 @@ gcloud run services add-iam-policy-binding my-service \
 
 ```bash
 gcloud run services add-iam-policy-binding my-service \
-    --region=us-central1 \
+    --region=europe-west2 \
     --member=user:alice@example.com \
     --role=roles/run.invoker
 
 # Or allow another service account (service-to-service)
 gcloud run services add-iam-policy-binding my-service \
-    --region=us-central1 \
+    --region=europe-west2 \
     --member=serviceAccount:caller-service@my-project.iam.gserviceaccount.com \
     --role=roles/run.invoker
 ```
@@ -330,7 +330,7 @@ Don't use Owner, Editor, Viewer. Use predefined roles instead.
 gcloud projects get-iam-policy my-project
 
 # View IAM policy for specific service
-gcloud run services get-iam-policy my-service --region=us-central1
+gcloud run services get-iam-policy my-service --region=europe-west2
 ```
 
 ### 7. Use Conditions (Advanced)
@@ -420,7 +420,7 @@ gcloud projects get-iam-policy my-project --format=json | \
 
 ```bash
 # Check who can invoke your service
-gcloud run services get-iam-policy my-service --region=us-central1
+gcloud run services get-iam-policy my-service --region=europe-west2
 ```
 
 ## Key Takeaways

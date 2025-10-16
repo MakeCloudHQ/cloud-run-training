@@ -2,12 +2,12 @@
 # Compute Instances
 # ============================================================================
 
-# VM in Service Project 1
+# VM in Service Project 1 (London)
 resource "google_compute_instance" "vm_service1" {
-  project      = data.google_project.stage_service1.project_id
-  name         = "vm-service1"
+  project      = local.stage_service1_project_id
+  name         = "vm-service1-london"
   machine_type = var.machine_type
-  zone         = var.zone
+  zone         = "europe-west2-a"
 
   boot_disk {
     initialize_params {
@@ -16,8 +16,8 @@ resource "google_compute_instance" "vm_service1" {
   }
 
   network_interface {
-    subnetwork_project = data.google_project.stage_host.project_id
-    subnetwork         = data.google_compute_subnetwork.stage_subnet.id
+    subnetwork_project = local.stage_host_project_id
+    subnetwork         = data.google_compute_subnetwork.london_subnet.id
   }
 
   metadata = {
@@ -27,15 +27,16 @@ resource "google_compute_instance" "vm_service1" {
   labels = {
     environment = "stage"
     service     = "service1"
+    location    = "london"
   }
 }
 
-# VM in Service Project 2
+# VM in Service Project 2 (Sydney)
 resource "google_compute_instance" "vm_service2" {
-  project      = data.google_project.stage_service2.project_id
-  name         = "vm-service2"
+  project      = local.stage_service2_project_id
+  name         = "vm-service2-sydney"
   machine_type = var.machine_type
-  zone         = var.zone
+  zone         = "australia-southeast1-a"
 
   boot_disk {
     initialize_params {
@@ -44,8 +45,8 @@ resource "google_compute_instance" "vm_service2" {
   }
 
   network_interface {
-    subnetwork_project = data.google_project.stage_host.project_id
-    subnetwork         = data.google_compute_subnetwork.stage_subnet.id
+    subnetwork_project = local.stage_host_project_id
+    subnetwork         = data.google_compute_subnetwork.sydney_subnet.id
   }
 
   metadata = {
@@ -55,5 +56,6 @@ resource "google_compute_instance" "vm_service2" {
   labels = {
     environment = "stage"
     service     = "service2"
+    location    = "sydney"
   }
 }

@@ -78,9 +78,14 @@ output "network_name" {
   value       = module.stage_shared_vpc.network_name
 }
 
-output "subnet_name" {
-  description = "The name of the subnet"
-  value       = module.stage_shared_vpc.subnets["europe-west2/stage-subnet"].name
+output "subnet_london_name" {
+  description = "The name of the London subnet"
+  value       = module.stage_shared_vpc.subnets["europe-west2/stage-subnet-london"].name
+}
+
+output "subnet_sydney_name" {
+  description = "The name of the Sydney subnet"
+  value       = module.stage_shared_vpc.subnets["australia-southeast1/stage-subnet-sydney"].name
 }
 
 output "summary" {
@@ -95,8 +100,9 @@ output "summary" {
       prod           = module.project_prod.project_id
     }
     network = {
-      name   = module.stage_shared_vpc.network_name
-      subnet = module.stage_shared_vpc.subnets["europe-west2/stage-subnet"].name
+      name          = module.stage_shared_vpc.network_name
+      subnet_london = module.stage_shared_vpc.subnets["europe-west2/stage-subnet-london"].name
+      subnet_sydney = module.stage_shared_vpc.subnets["australia-southeast1/stage-subnet-sydney"].name
     }
     suffix = random_id.suffix.hex
   }
