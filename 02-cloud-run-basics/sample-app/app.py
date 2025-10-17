@@ -40,7 +40,7 @@ def hello():
     Main endpoint - says hello!
     """
     name = request.args.get('name', 'World')
-    return f'Hello {name}!'
+    return f'Hello {name}! Welcome to the Cloud Run training app.\n'
 
 
 @app.route('/health')
